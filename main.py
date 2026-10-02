@@ -1,21 +1,32 @@
 import streamlit as st
-import time
 from datetime import datetime
+import pytz  # این کتابخانه برای مدیریت مناطق زمانی است
+import time
 
-# تنظیم عنوان صفحه
-st.set_page_config(page_title="ساعت آنلاین", page_icon="⏰")
+# تنظیم استایل صفحه برای اینکه وسط‌چین و زیباتر باشد
+st.set_page_config(page_title="ساعت دیجیتال من", page_icon="⏰")
 
-st.title("ساعت دیجیتال من")
-st.write("این ساعت روی وب اجرا می‌شود و در موبایل و لپ‌تاپ قابل مشاهده است.")
-
-# ایجاد یک جای خالی در صفحه برای آپدیت کردن زمان
+# ایجاد یک محل برای نمایش ساعت (Placeholder)
 placeholder = st.empty()
 
-# حلقه برای آپدیت لحظه‌ای ساعت
-while True:
-    current_time = datetime.now().strftime("%H:%M:%S")
-    # نمایش زمان در یک کادر زیبا (metric)
-    placeholder.metric("زمان دقیق:", current_time)
-    
-    time.sleep(1) # توقف برای یک ثانیه
+# تعیین منطقه زمانی ایران
+iran_tz = pytz.timezone('Asia/Tehran')
 
+# حلقه بی‌نهایت برای به‌روزرسانی ثانیه‌به‌ثانیه
+while True:
+    # گرفتن زمان دقیق ایران
+    now = datetime.now(iran_tz)
+    
+    # تبدیل زمان به فرمت خوانا (ساعت:دقیقه:ثانیه)
+    current_time = now.strftime("%H:%M:%S")
+    # اضافه کردن تاریخ (اختیاری)
+    current_date = now.strftime("%Y/%m/%d")
+
+    # نمایش در صفحه
+    with placeholder.container():
+        st.title("⏰ ساعت دیجیتال")
+        st.subheader(f"تاریخ: {current_date}")
+        st.markdown(f"<h1 style='text-align: center; font-size: 100px; color: #FF4B4B;'>{current_time}</h1>", unsafe_allow_html=True)
+    
+    # صبر کردن برای ۱ ثانیه و بعد تکرار حلقه
+    time.sleep(1)
